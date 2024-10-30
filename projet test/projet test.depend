@@ -1,0 +1,110 @@
+# depslib dependency file v1.0
+1729850819 source:c:\users\vng\documents\projet test\main.cpp
+	"Process.h"
+	"FCFS.h"
+	"SJF.h"
+	<iostream>
+	<vector>
+	<algorithm>
+	<string>
+	<iomanip>
+	<random>
+	<ctime>
+
+1729850413 c:\users\vng\documents\projet test\process.h
+	<iostream>
+	<vector>
+	<string>
+
+1729850934 source:c:\users\vng\documents\projet test\process.cpp
+	"process.h"
+	<iostream>
+	<string>
+	<iomanip>
+	<random>
+	<ctime>
+
+1729770121 c:\users\vng\documents\projet test\fcfs.h
+	"Process.h"
+	<iostream>
+	<vector>
+
+1729850441 source:c:\users\vng\documents\projet test\fcfs.cpp
+	"Process.h"
+	<iostream>
+	<algorithm>
+	<string>
+	<vector>
+
+1729851142 source:c:\users\vng\documents\projet test\sjf.cpp
+	"Process.h"
+	<iostream>
+	<algorithm>
+	<string>
+	<vector>
+
+1729829949 c:\users\vng\documents\projet test\sjf.h
+	"Process.h"
+	<iostream>
+	<algorithm>
+	<string>
+	<vector>
+
+1730030857 source:c:\users\vng\documents\projet de se\projet test\fcfs.cpp
+	"Process.h"
+	<iostream>
+	<algorithm>
+	<string>
+	<vector>
+	<chrono>
+	<thread>
+
+1730190411 c:\users\vng\documents\projet de se\projet test\process.h
+	<iostream>
+	<vector>
+	<string>
+
+1729934751 source:c:\users\vng\documents\projet de se\projet test\main.cpp
+	"Process.h"
+	"FCFS.h"
+	"SJF.h"
+	<iostream>
+	<vector>
+	<algorithm>
+	<string>
+	<iomanip>
+	<random>
+	<ctime>
+
+1729916256 c:\users\vng\documents\projet de se\projet test\fcfs.h
+	"Process.h"
+	<iostream>
+	<vector>
+
+1730191462 c:\users\vng\documents\projet de se\projet test\sjf.h
+	"Process.h"
+	<iostream>
+	<algorithm>
+	<string>
+	<vector>
+
+1730037361 source:c:\users\vng\documents\projet de se\projet test\process.cpp
+	"process.h"
+	<iostream>
+	<string>
+	<iomanip>
+	<random>
+	<ctime>
+
+1730190646 source:c:\users\vng\documents\projet de se\projet test\sjf.cpp
+	"Process.h"
+	<iostream>
+	<algorithm>
+	<string>
+	<vector>
+	<chrono>
+	<thread>
+
+1729919733 source:c:\users\vng\documents\projet de se\projet test\affichage processus.cpp
+	<Process.h>
+
