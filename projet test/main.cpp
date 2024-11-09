@@ -24,35 +24,55 @@ std::string generateurNom (int i) {
 void afficherEnTete() {
     const int largeurColonne = 20;
 
-    // Affichage de l'en-tête
+    // Affichage de l'en-tÃªte
     std::cout << std::setw(largeurColonne) << "Arrivee"
               << std::setw(largeurColonne) << "PID"
+              << std::setw(largeurColonne) << "Priorite"
               << std::setw(largeurColonne) << "Nom"
               << std::setw(largeurColonne) << "Temps Processeur"
               << std::setw(largeurColonne) << "Temps E/S"
-              << std::setw(largeurColonne) << "Memoire"
+              << std::setw(largeurColonne) << "Memoire (en %)"
               << std::endl;
 
-    std::cout << std::string(largeurColonne * 6, '-') << std::endl; // Séparateur
+    std::cout << std::string(largeurColonne * 7, '-') << std::endl; // SÃ©parateur
 }
 
 
-void afficherEnTete (int nombreColonne) {
+void afficherEnTete1 (int nombreColonne) {
    const int largeurColonne = 20;
 
-    // Affichage de l'en-tête
+    // Affichage de l'en-tÃªte
     std::cout << std::setw(largeurColonne) << "Arrivee"
               << std::setw(largeurColonne) << "PID"
               << std::setw(largeurColonne) << "Nom"
               << std::setw(largeurColonne) << "Temps Processeur"
               << std::setw(largeurColonne) << "Temps E/S"
-              << std::setw(largeurColonne) << "Memoire"
+              << std::setw(largeurColonne) << "Memoire (en %)"
               << std::setw(largeurColonne) << "Temps Execution"
               << std::setw(largeurColonne) << "Temps Attente"
               <<std::setw (largeurColonne) << "Etat"
               << std::endl;
 
-    std::cout << std::string(largeurColonne * nombreColonne, '-') << std::endl; // Séparateur
+    std::cout << std::string(largeurColonne * nombreColonne, '-') << std::endl; // SÃ©parateur
+}
+
+void afficherEnTete2 (int nombreColonne) {
+   const int largeurColonne = 20;
+
+    // Affichage de l'en-tÃªte
+    std::cout << std::setw(largeurColonne) << "Arrivee"
+              << std::setw(largeurColonne) << "PID"
+              << std::setw(largeurColonne) << "Priorite"
+              << std::setw(largeurColonne) << "Nom"
+              << std::setw(largeurColonne) << "Temps Processeur"
+              << std::setw(largeurColonne) << "Temps E/S"
+              << std::setw(largeurColonne) << "Memoire (en %)"
+              << std::setw(largeurColonne) << "Temps Execution"
+              << std::setw(largeurColonne) << "Temps Attente"
+              << std::setw (largeurColonne) << "Etat"
+              << std::endl;
+
+    std::cout << std::string(largeurColonne * nombreColonne, '-') << std::endl; // SÃ©parateur
 }
 
 
@@ -76,13 +96,12 @@ int main()
         vector <int> Pid ;  //Contient tous les PID deja attribues
 
 
-
-        // Initialiser la seed avec l'horloge système
-        std::mt19937 gen(static_cast<unsigned int>(std::time(0)));                                 // Générateur de nombres aléatoires
+        // Initialiser la seed avec l'horloge systÃ¨me
+        std::mt19937 gen(static_cast<unsigned int>(std::time(0)));                                 // GÃ©nÃ©rateur de nombres alÃ©atoires
         std::uniform_int_distribution<> pidDist(1, 1000);       // Distribution pour les PID
-        std::uniform_real_distribution<> memoryDist(0.1, 40.0);// Distribution pour l'utilisation de la mémoire, Un processus ne peut pas utiliser pls de 40% de la memoire totale
-        std::uniform_int_distribution<> priorityDist(1, 3);    // Distribution pour la priorité
-        std::uniform_int_distribution<> arrivalDist(1, 50);    // Distribution pour le temps d'arrivée
+        std::uniform_real_distribution<> memoryDist(0.1, 40.0);// Distribution pour l'utilisation de la mÃ©moire, Un processus ne peut pas utiliser pls de 40% de la memoire totale
+        std::uniform_int_distribution<> priorityDist(1, 3);    // Distribution pour la prioritÃ©
+        std::uniform_int_distribution<> arrivalDist(1, 50);    // Distribution pour le temps d'arrivÃ©e
         std::uniform_int_distribution<> CPUDist (1, 100);
         std::uniform_int_distribution<> ESDist (1, 50);
 
@@ -92,25 +111,19 @@ int main()
             int pid ;
             pid = pidDist(gen);
 
-            bool found = false;
+            bool found1 = false;
 
             for (int i = 0; i < Pid.size(); i++) {
                 if (Pid[i] == pid) {
-                    found = true;
-                    break;
+                    found1 = true;
                 }
             }
 
-            while (found == true) {
-                cout << "Ce PID est deja attribue !!\n Veuillez entrer un autre PID " <<endl;
-                cin >> pid;
-                while (pid <= 0 || pid >1000){
-                    cout << "Veuillez entrer un PID compris entre 1 et 1000" << endl;
-                    cin >> pid;
-                }
+            while (found1 == true) {
+                pid = pidDist(gen);
                 for (int i = 0; i < Pid.size(); i++) {
                     if (Pid[i] == pid){
-                        found = true;
+                        found1 = true;
                     }
                 }
             }
@@ -278,23 +291,33 @@ int main()
         cin >> choix;
 
         if (choix == 1) {
-            cout << "\n\nListe des processus trie selon l'algorithme d'ordonnancement Fisrt Come Fisrt Served !!!\n"<<endl;
+            cout << "\nListe des processus trie selon l'algorithme d'ordonnancement Fisrt Come Fisrt Served !!!\n"<<endl;
             algorithme_FCFS_NonPreemptif (processus);
-            afficherEnTete(9);
+            afficherEnTete1(9);
             for (Process p :processus ){
-                p.displayInfo(9);
+                p.displayInfo1(9);
             }
         } else if (choix == 2) {
-            cout << "\n\nListe des processus trie selon l'algorithme d'ordonnancement Short Job First !!!\n"<<endl;
-            algorithme_SJF_NonPreemptif (processus);
-            afficherEnTete(9);
-            for (Process p :processus ){
-                p.displayInfo(9);
+            cout << "Voulez-vous appliquer l'algorithme preemptif ou non preemptif ?" << endl;
+            cout << "Entrer 1 pour choisir l'algorithme nonpreemptif et 2 pour choisir la version preemptive" << endl;
+            cin >>  choix;
+            if (choix == 1) {
+                cout << "\nListe des processus trie selon l'algorithme d'ordonnancement Short Job First non preemptif !!!\n"<<endl;
+                algorithme_SJF_NonPreemptif (processus);
+                afficherEnTete1(9);
+                for (Process p :processus ){
+                    p.displayInfo1(9);
+                }
+            } else if (choix == 2) {
+                cout << "\nListe des processus trie selon l'algorithme d'ordonnancement Short Job First preemptif !!!\n"<<endl;
+                algorithme_SJF_Preemptif (processus);
+                afficherEnTete2(10);
+                for (Process p :processus ){
+                    p.displayInfo2(10);
+                }
             }
         }
     }
 
     return 0;
 }
-
-
