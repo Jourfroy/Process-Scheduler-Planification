@@ -228,7 +228,7 @@ void algorithme_SJF_Preemptif(std::vector<Process>& processus) {
     processus[0].setm_presenceMemoire("Charge En Memoire");
 
     double memoireDispo = 100.0;
-    int secondeMemoire = 0;
+    int secondeMemoire = 1;
     std::vector<Process> memory, waiting_list, ProcessusExecuter;
     memory.push_back(processus[0]);
     memoireDispo -= memory[0].getm_memoire();
@@ -245,48 +245,51 @@ void algorithme_SJF_Preemptif(std::vector<Process>& processus) {
 
         if (found == -1) {
             // Tous les processus en mémoire ont déjà été exécutés
-            cout << "Tous les processus en memoire ont deja ete executes !!!" << endl;
+
             if (waiting_list.empty()){
+
                 if (i < processus.size()) {
                     // Ici tous les processus sont deja executes et la liste d'attente est vide, donc il faut patienter qu'un processus soit charge en memoire et que le temps d'entree/sortie d'un processus arrive
-                    cout << "La liste d'attente est vide !!!" << endl;
-                    cout << "En attente du processus " << processus[i].getm_name() << " pendant " << (processus[i].getm_tempsArrive() - secondeMemoire) << " secondes." << endl;
-                    while (processus[i+1].getm_tempsArrive() - secondeMemoire) {
+                    cout << "Tous les processus en memoire ont deja ete executes !" << endl;
+                    cout << "En attente du processus " << processus[i].getm_name() << " pendant " << processus[i].getm_tempsArrive() - secondeMemoire + 1 << " secondes." << endl;
+                    while ((processus[i].getm_tempsArrive() - secondeMemoire) >= 0) {
                         std::this_thread::sleep_for(std::chrono::milliseconds(100));
                         secondeMemoire++;
 
                         // Si pendant qu'on attend que ce processus soit charge en memoire, le temps ES d'un processus est arrive
-                        std::vector <int> Asupprimer;   // Ce vecteur contient les differents indices des processus qui ont enpiser leur temps ES
-                        int j = 0;
-                        while (j < memory.size()) {
-                            memory[j].setm_tempsES_Ecoule (memory[j].getm_tempsES_Ecoule() + 1);
-                            if ((memory[j].getm_tempsES() - memory[j].getm_tempsES_Ecoule()) == 0) {
-                                memory.erase(memory.begin() + j);
-                            }
-                            j++;
-                        }
-                        if (secondeMemoire == processus[i].getm_tempsArrive()) {
-                            if (memoireDispo >= processus[i].getm_memoire()) {
-                                memory.push_back (processus[i]);
-                                cout << "Ce processus est charge en memoire !!!" << endl;
-                                found = memory.size()-1;
-                            } else {
-                                waiting_list.insert(waiting_list.begin(), processus[i]);
-                                cout << "Ce processus est dans la liste d'attente !!!" << endl;
-                                continue;
+                        for (auto& p : ProcessusExecuter) {
+                            p.setm_tempsES_Ecoule(p.getm_tempsES_Ecoule() + 1);
+                            if (p.getm_tempsES_Ecoule() == p.getm_tempsES()) {
+                                p.setm_etat("Execution complete");
+                                memoireDispo += p.getm_memoire();
+
+                                auto it = std::find_if(memory.begin(), memory.end(), [&p](const Process& proc) { return proc.getm_PID() == p.getm_PID(); });
+                                if (it != memory.end())
+                                    memory.erase(it);
                             }
                         }
                     }
-                    i++;
-                }else {
+
+                    if (processus[i].getm_memoire() >= memoireDispo) {
+                        memory.push_back(processus[i]);
+                        found = memory.size() - 1;
+                        i++;
+                    }else {
+                        waiting_list.insert(waiting_list.begin(), processus[i]);
+                        i++;
+                        continue;
+                    }
+                } else {
                     // Dans ce cas on a deja executer tous les processus
                     break;
                 }
+
             } else {
                 // Ici tous les processus en memoire ont deja ete excuter mais il n'y a pas assez d'espace pour charge un autre processus en memoire
                 // Donc je suis oblige d'attendre que le temps d'ES d'un processus se termine pour pouvoir charge un processus de la liste d'attente en memoire
-                cout << "\nLa liste d'attente n'est pas vide, donc la memoire est pleine et tous les processus en memoire n'ont pas completer leur temps Entree/Sortie !!!" << endl;
-                cout << "Veuillez attendre qu'un processus complete son temps Entree/Sortie !!!\n" << endl;
+                cout << "Tous le processus charge en memoire ont ete executer par le processeur mais n'ont pas completer leur temps ES." << endl;
+                cout << "Et il n'y a plus assez d'espace en memoire pour charger un processus !" << endl;
+                cout << "Veuillez attendre qu'un processus complete son temps ES !!!" << endl;
 
                 // Recherche du processus charge en memoire ayant le plus petit temps ES
                 int indice_temps_ES = 0;
@@ -295,21 +298,40 @@ void algorithme_SJF_Preemptif(std::vector<Process>& processus) {
                         indice_temps_ES = j;
                     }
                 }
-                while ((memory[indice_temps_ES].getm_tempsES() - memory[indice_temps_ES].getm_tempsES_Ecoule()) > 0) {
+                while (memory[indice_temps_ES].getm_tempsES() >= memory[indice_temps_ES].getm_tempsES_Ecoule()) {
                     std::this_thread::sleep_for(std::chrono::milliseconds(100));
                     secondeMemoire++;
-                    memory[indice_temps_ES].setm_tempsES_Ecoule(memory[indice_temps_ES].getm_tempsES_Ecoule() + 1);
-                }
-                memoireDispo += memory[indice_temps_ES].getm_memoire();
-                memory.erase(memory.begin() + indice_temps_ES);
-                chargerEnMemoire(memory, waiting_list, memoireDispo);
 
-                found = memory.size()-1;
+                    for (int j = i; j < processus.size(); ++j) {
+                        if ((processus[j].getm_tempsArrive() == secondeMemoire) && (processus[j].getm_dejaExecuter() == false)) {
+                            processus[j].setm_presenceMemoire("Liste d'attente");
+                            waiting_list.insert(waiting_list.begin(), processus[j]);
+                            i++;
+                        }
+                    }
+
+                    for (auto& p : ProcessusExecuter) {
+                        p.setm_tempsES_Ecoule(p.getm_tempsES_Ecoule() + 1);
+                        if (p.getm_tempsES_Ecoule() == p.getm_tempsES()) {
+                            p.setm_etat("Execution complete");
+                            memoireDispo += p.getm_memoire();
+
+                            auto it = std::find_if(memory.begin(), memory.end(), [&p](const Process& proc) { return proc.getm_PID() == p.getm_PID(); });
+                            if (it != memory.end())
+                                memory.erase(it);
+                            if (!memory.empty()) {
+                                chargerEnMemoire(memory, waiting_list, memoireDispo);
+                            }
+                            // A la prochaine execution, on va donc choisir le processus ayant le plus petit temps CPU parmi ceux qui viennent d'etre charge en memoire
+                            continue;
+                        }
+                    }
+                }
             }
 
         }
 
-         // Simuler l'exécution CPU du processus sélectionné
+        // Simuler l'exécution CPU du processus sélectionné
         affichage (memory[found]);
 
 
