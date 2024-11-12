@@ -316,6 +316,28 @@ int main()
                     p.displayInfo2(10);
                 }
             }
+        }else if (choix == 3) {
+            cout << "Entrer le quantum : " << ends;
+            int quantum;
+            cin >> quantum;
+            cout << "Voulez vous la version preemptive ou non preemptive ?" << endl;
+            cout << "Entrer 1 pour choisir l'algorithme nonpreemptif et 2 pour choisir la version preemptive" << endl;
+            cin >>  choix;
+            if (choix == 1) {
+                cout << "\nListe des processus trie selon l'algorithme d'ordonnancement  Round Robin (RR) version non preemptive !!!\n"<<endl;
+                algorithme_RR_NonPreemptif (processus, quantum);
+                afficherEnTete2(10);
+                for (Process p :processus ){
+                    p.displayInfo2(10);
+                }
+            } else if (choix == 2) {
+                cout << "\nListe des processus trie selon l'algorithme d'ordonnancement  Round Robin (RR) version preemptive !!!\n"<<endl;
+                algorithme_RR_Preemptif (processus, quantum);
+                afficherEnTete2(10);
+                for (Process p :processus ){
+                    p.displayInfo2(10);
+                }
+            }
         }
     }
 
